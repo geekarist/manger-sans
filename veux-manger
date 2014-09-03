@@ -1,0 +1,40 @@
+#!/usr/bin/python3
+
+import argparse
+
+def chercher_aliments(avec, sans, parmi):
+    result = []
+    for aliment in parmi:
+        avec_min = avec.lower()
+        sans_min = sans.lower()
+        produit_min = aliment['produit'].lower()
+        compo_min = aliment['composition'].lower()
+        if (avec_min in produit_min and sans_min not in compo_min):
+            result.append(aliment)
+    return result
+
+def recuperer_choix():
+    parser = argparse.ArgumentParser(description='Trouver des aliments sans allergènes')
+    parser.add_argument(dest='avec', help='Aliment que vous voulez manger')
+    parser.add_argument('--sans', dest='sans', help='Aliment que vous voulez éviter')
+    args = parser.parse_args()
+    return (args.avec, args.sans)
+
+(avec, sans) = recuperer_choix()
+print('Vous voulez manger : {} sans {}. Voici ce que j\'ai trouvé :'.format(avec, sans))
+
+tous_aliments = [
+        {'marque': 'Valpiform', 'produit': 'Cookichoc', 'composition': 'farine de maïs, farine de riz, chocolat'},
+        {'marque': 'Pain des fleurs', 'produit': 'Tartines craquantes au quinoa', 'composition': 'farine de riz, farine de quinoa, sel'},
+        {'marque': 'Taureau ailé', 'produit': 'Riz basmati', 'composition': 'riz'},
+        {'marque': 'Lustucru', 'produit': 'Spaghetti courts aux oeufs frais, 250g', 'composition': 'Semoule de blé dur de qualité supérieur, œufs frais (13.5%)'},
+        {'marque': 'Schar', 'produit': 'Pain carré sans gluten, 2x200g', 'composition': 'eau, amidon de maïs, farine de riz, huile végétale, sucre, épaississants : farine de graines de guar et E-464, protéine de lupin, levure, sel, fi bre végétale, arôme, émulsifiant : E-472e.'}
+]
+
+aliments_trouves = chercher_aliments(avec, sans, parmi=tous_aliments)
+
+for aliment in aliments_trouves:
+    print('- {}, {}'.format(aliment['marque'], aliment['produit']))
+
+if not aliments_trouves:
+    print('- Rien du tout, désolé.')
